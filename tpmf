@@ -1,0 +1,118 @@
+from tkinter import*
+import speech_recognition as sr
+from PIL import ImageTk,Image
+import pyttsx3
+
+
+#initializing 
+r = sr.Recognizer()
+engine = pyttsx3.init()
+
+
+#initilazing Tkinter to WIN
+win = Tk()
+
+#window gemoetry
+win.geometry("500x350+180+120")
+
+#window resizable or not?
+win.resizable(False,False)
+
+#widgets : it is a container where (buttons,label,entry,checkbutton,canvas,listbox,messagbox,menubutton,radiobutton scale,spinbox,python-turtle ,message are stored)
+
+#Place Grid Pack are used to position the widgets in the window tab
+
+#Place : 
+#  ANCHOR = N,NE,E,SE,S,SW,W,NW,CENTER  
+#  BORDERMODE = inside,outside
+#  HEIGHT AND WIDTH = 1,2,3,4,...1300
+#  RELHEIGHT & RELWIDTH = 1.0,0,2.3,1.2,...
+#  relx and rely 
+#  x and y
+
+#grid :  
+#column and row
+#columnspan and rowspan
+#sticky = N,E,S,W,NE,NW,SE,SW
+#ipadx & ipady
+#padx and pady
+
+#Pack():
+#EXPAND = True,False
+#FILL = X,Y BOTH
+#SIDE = TOP (default),BOTTOM,LEFT,OR RIGHT
+
+
+#title of the window 
+win.title("TALKING PYTHON")
+#background color of window
+win["bg"] = "yellow"
+heading = Label(win,text = "Talking Python",fg = "white",font= ('verdana',25,'bold'),bg = "darkblue")
+heading.place(x= 0,y = 20,height=60,width=500)
+
+
+au = Label(win,text = "@pythongrowin",fg = "white",font= ('verdana',15,'bold'),bg = "orange")
+au.place(x= 250,y = 80,height=30,width=200)
+
+ch = Label(win,text = "Choose a Voice :",fg = "white",font= ('verdana',20,'bold'),bg = "orange")
+ch.place(x = 90,y = 130,height=100,width= 330)
+
+var = IntVar() 
+def sel():
+    mf = var.get()
+    if mf == 1:
+        label.config(text = "You have Chosen Male")
+    elif mf == 2:
+        label.config(text = "You have chosen Female")
+    setvoice()
+        
+r1 = Radiobutton(win,text = "Male", command = sel,variable = var,value = 1,bg = "orange" )
+r1.place(x = 100,y = 200)
+
+r1 = Radiobutton(win,text = "Female", command = sel,variable = var,value = 2,bg = "orange" )
+r1.place(x = 180,y = 200)
+
+
+
+def take_speech():
+    with sr.Microphone() as source:
+        print("Speak :")
+        audio = r.listen(source)
+    try:
+        text = r.recognize_google(audio)
+        engine.say(text)
+        engine.runAndWait()
+        print("You Said : " + text)
+    except:
+        print("Sorry Could not recognixe what you said")
+
+
+def setvoice():
+    voices = engine.getProperty('voices')
+    mf = var.get()
+    if mf == 1:
+        type_voice = "M"
+    elif mf == 2:
+        type_voice = "F"
+    type_voice = type_voice.lower()
+    if "m" in type_voice:
+        engine.setProperty('voice',voices[0].id)
+    elif "f" in type_voice :
+        engine.setProperty('voice',voices[1].id)
+    engine.setProperty("rate",110)
+
+
+
+
+
+start = Button(win,text = "Start",command = take_speech,font= ('verdana',20,'bold'))
+start.place(x = 180,y = 240, height= 60,width = 90)
+
+
+
+
+
+
+label = Label(win)
+label.place(x = 260,y = 201,width= 150)
+win.mainloop()
